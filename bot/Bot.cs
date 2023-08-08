@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using bot.Controllers;
+using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -9,10 +10,17 @@ namespace bot
 {
     internal class Bot : BackgroundService
     {
+        private DefaultMessageController _defaultMessageController;
+        private TextMessageController _textMessageController;
+        private InlineKeyboardController _inlineKeyboardController;
         private ITelegramBotClient _telegramClient;
 
-        public Bot(ITelegramBotClient telegramClient)
+        public Bot(ITelegramBotClient telegramClient,DefaultMessageController defaultMessageController,
+            TextMessageController textMessageController, InlineKeyboardController inlineKeyboardController)
         {
+            _defaultMessageController = defaultMessageController;
+            _textMessageController = textMessageController;
+            _inlineKeyboardController = inlineKeyboardController;
             _telegramClient = telegramClient;
         }
 
@@ -29,17 +37,26 @@ namespace bot
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            if (update.Type == UpdateType.CallbackQuery)
+            {
+                await
+                  _inlineKeyboardController.Handle(update.CallbackQuery, cancellationToken);
+                return;
+            }
             if (update.Type == UpdateType.Message)
-                if (update.Message.Type == MessageType.Text)
+            {
+                switch (update.Message!.Type)
                 {
-                    await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id,
-                        $"Длина сообщения: {update.Message.Text.Length} знаков", cancellationToken: cancellationToken);
+                    case MessageType.Text:
+                        await
+                            _textMessageController.Handle(update.Message, cancellationToken);
+                        return;
+                    default:
+                        await
+                            _defaultMessageController.Handle(update.Message, cancellationToken);
+                        return;
                 }
-                else 
-                {
-                    await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id,
-                        "Вы отправили не строку.", cancellationToken: cancellationToken);
-                }
+            }
         }
 
         Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

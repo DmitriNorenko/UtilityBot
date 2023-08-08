@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
+using bot.Models;
 
 namespace bot.Models
 {
-    internal class IStorage
+    public interface IStorage
     {
+        Session GetSession(long chatId);
     }
 }

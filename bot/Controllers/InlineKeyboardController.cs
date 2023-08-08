@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
+using bot.Models;
 
-namespace bot.Controllers
+ namespace bot.Controllers
 {
     public class InlineKeyboardController
     {
@@ -24,7 +25,7 @@ namespace bot.Controllers
         {
             if (callbackQuery?.Data == null) return;
 
-            _memoryStorage.GetSession(callbackQuery.From.Id).LanguageCode = callbackQuery.Data;
+            _memoryStorage.GetSession(callbackQuery.From.Id).ActionCode = callbackQuery.Data;
 
             string action = callbackQuery.Data switch
             {
