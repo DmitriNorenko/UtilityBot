@@ -37,7 +37,7 @@ using bot.Models;
             await
                 _telegramClient.SendTextMessageAsync(callbackQuery.From.Id,
                 $"<b>Вы выбрали - {action}.{Environment.NewLine}</b>" +
-                $"{Environment.NewLine} Можно поменять в главном меню.", cancellationToken: ct,
+                $"{Environment.NewLine} Можете уже использовать бота!", cancellationToken: ct,
                 parseMode: ParseMode.Html);
         }
     }

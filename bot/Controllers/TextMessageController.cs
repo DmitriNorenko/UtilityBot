@@ -41,29 +41,30 @@ namespace bot.Controllers
                         parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
                     break;
                 default:
-                    string userLanguageCode = _memoryStorage.GetSession(message.Chat.Id).ActionCode;
-                    if (userLanguageCode == "*")
+                    string ActionCode = _memoryStorage.GetSession(message.Chat.Id).ActionCode;
+                    if (ActionCode == "*")
                     {
                         await _telegramClient.SendTextMessageAsync(message.Chat.Id,
                         $"Длина сообщения: {message.Text.Length}.", cancellationToken: ct);
                     }
-                    if (userLanguageCode == "+")
+                    if (ActionCode == "+")
                     {
                         string[] words = message.Text.Split(' ');
+                        int sum = 0;
                         foreach (string word in words)
                         {
                             if (int.TryParse(word, out int i))
                             {
-                                int sum = +i;
-                                await _telegramClient.SendTextMessageAsync(message.Chat.Id,
-                          $"Сумма: {sum}.", cancellationToken: ct);
+                                sum += i;
                             }
                             else
                             {
                                 await _telegramClient.SendTextMessageAsync(message.Chat.Id,
-                          $"Вы ввели не числа.", cancellationToken: ct);
+                         $"Вводите числа.", cancellationToken: ct);
                             }
                         }
+                        await _telegramClient.SendTextMessageAsync(message.Chat.Id,
+                         $"Сумма: {sum}.", cancellationToken: ct);
                     }
                     break;
             }
