@@ -47,7 +47,24 @@ namespace bot.Controllers
                         await _telegramClient.SendTextMessageAsync(message.Chat.Id,
                         $"Длина сообщения: {message.Text.Length}.", cancellationToken: ct);
                     }
-
+                    if (userLanguageCode == "+")
+                    {
+                        string[] words = message.Text.Split(' ');
+                        foreach (string word in words)
+                        {
+                            if (int.TryParse(word, out int i))
+                            {
+                                int sum = +i;
+                                await _telegramClient.SendTextMessageAsync(message.Chat.Id,
+                          $"Сумма: {sum}.", cancellationToken: ct);
+                            }
+                            else
+                            {
+                                await _telegramClient.SendTextMessageAsync(message.Chat.Id,
+                          $"Вы ввели не числа.", cancellationToken: ct);
+                            }
+                        }
+                    }
                     break;
             }
         }
