@@ -32,7 +32,7 @@ namespace bot.Controllers
                     buttons.Add(new[]
                     {
                         InlineKeyboardButton.WithCallbackData($"Сложение" , $"+"),
-                        InlineKeyboardButton.WithCallbackData($"К.Букв" , $"*")
+                        InlineKeyboardButton.WithCallbackData($"К.Символов" , $"*")
                     });
                     await
                         _telegramClient.SendTextMessageAsync(message.Chat.Id, $"<b>" +
@@ -45,7 +45,7 @@ namespace bot.Controllers
                     if (ActionCode == "*")
                     {
                         await _telegramClient.SendTextMessageAsync(message.Chat.Id,
-                        $"Длина сообщения: {message.Text.Length}.", cancellationToken: ct);
+                        $"В вашем сообщении: {message.Text.Length} символов.", cancellationToken: ct);
                     }
                     if (ActionCode == "+")
                     {
