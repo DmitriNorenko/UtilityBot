@@ -26,16 +26,16 @@ namespace bot.Controllers
 
             _memoryStorage.GetSession(callbackQuery.From.Id).LanguageCode = callbackQuery.Data;
 
-            string languageText = callbackQuery.Data switch
+            string action = callbackQuery.Data switch
             {
-                "ru" => "Русский",
-                "en" => "Английский",
+                "+" => "Сложение",
+                "*" => "Количество символов",
                 _ => String.Empty
             };
 
             await
                 _telegramClient.SendTextMessageAsync(callbackQuery.From.Id,
-                $"<b>Язык аудио - {languageText}.{Environment.NewLine}</b>" +
+                $"<b>Вы выбрали - {action}.{Environment.NewLine}</b>" +
                 $"{Environment.NewLine} Можно поменять в главном меню.", cancellationToken: ct,
                 parseMode: ParseMode.Html);
         }
